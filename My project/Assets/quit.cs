@@ -1,35 +1,29 @@
 using UnityEngine;
-using UnityEngine.XR;
 
-public class VRQuitScript : MonoBehaviour
+public class OculusQuitScript : MonoBehaviour
 {
-    [SerializeField]
-    private string quitButton = "Fire1"; // Set the default input button
+    // Use the appropriate KeyCode for the primary button on the Oculus Touch controller
+    private KeyCode primaryButtonKeyCode = KeyCode.JoystickButton0; // This is typically the 'A' button on Oculus Touch
 
-    // Update is called once per frame
     void Update()
     {
-        // Check if the specified button is pressed
-        if (Input.GetButtonDown(quitButton))
+        // Check if the primary button is pressed
+        if (Input.GetButtonDown("Fire1")) // "Fire1" is a generic input name for the primary button
         {
-            QuitApplication();
+            QuitGame();
         }
     }
 
-    void QuitApplication()
+    void QuitGame()
     {
-        // Check if the application is running in VR mode
-        if (XRSettings.isDeviceActive)
-        {
-            // Quit VR headset
-            XRSettings.enabled = false;
-        }
+        // Add any additional cleanup or game-ending logic here
+        Debug.Log("Quitting game");
 
-        // Quit the application
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#else
+    #else
         Application.Quit();
-#endif
+    #endif
     }
+
 }

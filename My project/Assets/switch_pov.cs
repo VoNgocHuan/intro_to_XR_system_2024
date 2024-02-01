@@ -1,27 +1,51 @@
 using UnityEngine;
 
-public class SwitchPOV : MonoBehaviour
+public class Oculus_switch_pov_Script : MonoBehaviour
 {
+    private KeyCode primaryButtonKeyCode = KeyCode.JoystickButton0; // A button on Oculus Touch
+    private KeyCode gripButtonKeyCode = KeyCode.JoystickButton14; // Grip button on Oculus Touch
+
     public Transform player;
-    public Transform[] viewpoints;
-    private int currentViewpointIndex = 0;
+    public Transform teleportTarget;
 
     void Update()
     {
-        // Check for input to switch POV
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Fire2"))  // Change "Fire1" to the button you want to use
+        // Check if the primary button is pressed
+        if (Input.GetKeyDown(primaryButtonKeyCode))
         {
-            SwitchViewpoint();
+            QuitGame();
+        }
+
+        // Check if the grip button is pressed
+        if (Input.GetKeyDown(gripButtonKeyCode))
+        {
+            TeleportPlayer();
         }
     }
 
-    void SwitchViewpoint()
+    void QuitGame()
     {
-        // Increment the viewpoint index
-        currentViewpointIndex = (currentViewpointIndex + 1) % viewpoints.Length;
+        // Add any additional cleanup or game-ending logic here
+        Debug.Log("Quitting game");
 
-        // Set the player's position and rotation based on the selected viewpoint
-        player.position = viewpoints[currentViewpointIndex].position;
-        player.rotation = viewpoints[currentViewpointIndex].rotation;
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    void TeleportPlayer()
+    {
+        // Teleport the player to the teleport target position
+        if (player != null && teleportTarget != null)
+        {
+            player.position = teleportTarget.position;
+            Debug.Log("Player teleported to the target position");
+        }
+        else
+        {
+            Debug.LogError("Player or teleport target not assigned in the inspector.");
+        }
     }
 }
