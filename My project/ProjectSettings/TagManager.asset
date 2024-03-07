@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Grabbable
   - Meteor
+  - hit
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - ground
   - hidden
   - left hand
   - right hand

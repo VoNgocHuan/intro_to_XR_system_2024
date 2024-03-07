@@ -18,7 +18,7 @@ public class FireBulletOnActivate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void FireBullet(ActivateEventArgs arg)
