@@ -5,46 +5,47 @@ using UnityEngine.AI;
 
 public class WalkingAI : MonoBehaviour
 {
-    private NavMeshAgent agent;
+    private NavMeshAgent navMeshAgent;
     private Animator animator;
-    private bool isWalking = false;
+    private Vector3 randomDestination;
+    private bool isMoving = false;
+
+    public float minIdleTime = 1f;
+    public float maxIdleTime = 4f;
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        // Start the walking coroutine
-        StartCoroutine(WalkRandomDestination());
+        SetRandomDestination();
     }
 
     void Update()
     {
-        // Set animation parameter based on whether the AI is walking
-        animator.SetBool("IsWalking", isWalking);
+        if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance < 0.5f && !isMoving)
+        {
+            StartCoroutine(WaitAndSetDestination(Random.Range(minIdleTime, maxIdleTime)));
+        }
+
+        animator.SetFloat("IsWalking", navMeshAgent.velocity.magnitude);
     }
 
-    IEnumerator WalkRandomDestination()
+    void SetRandomDestination()
     {
-        while (true)
-        {
-            // Generate a random direction within the forward vector
-            Vector3 randomDirection = transform.forward * Random.Range(5f, 15f);
+        Vector3 randomDirection = Random.insideUnitSphere * 10f;
+        randomDirection += transform.position;
+        NavMeshHit hit;
+        NavMesh.SamplePosition(randomDirection, out hit, 10f, NavMesh.AllAreas);
+        randomDestination = hit.position;
+        navMeshAgent.SetDestination(randomDestination);
+        isMoving = true;
+    }
 
-            // Set the destination for the NavMeshAgent
-            agent.SetDestination(transform.position + randomDirection);
-
-            // Set isWalking to true to trigger walking animation
-            isWalking = true;
-
-            // Wait for the AI to reach the destination
-            yield return new WaitUntil(() => !agent.pathPending && agent.remainingDistance < 0.1f);
-
-            // Set isWalking to false to trigger idle animation
-            isWalking = false;
-
-            // Wait for a short period before generating the next random destination
-            yield return new WaitForSeconds(Random.Range(2f, 5f));
-        }
+    System.Collections.IEnumerator WaitAndSetDestination(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        SetRandomDestination();
+        isMoving = false;
     }
 }
