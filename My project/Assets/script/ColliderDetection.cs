@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+public class ColliderDetection : MonoBehaviour
 {
     public int hitThreshold = 3; // Number of hits required to deactivate the AI
     public float deactivationTime = 5f; // Time before the ragdoll disappears

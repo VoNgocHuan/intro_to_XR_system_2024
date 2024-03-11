@@ -8,6 +8,7 @@ public class New_FireBulletOnActivate : MonoBehaviour
     public Transform spawnpoint;
     public float fireSpeed = 20;
     public float timeBetweenPresses = 0.5f; // Adjust this value as needed
+    public float bulletForce = 20f;
 
     public enum FiringMode
     {
@@ -63,6 +64,8 @@ public class New_FireBulletOnActivate : MonoBehaviour
         GameObject spawnedBullet = Instantiate(bullet);
         spawnedBullet.transform.position = spawnpoint.position;
         spawnedBullet.GetComponent<Rigidbody>().velocity = spawnpoint.forward * fireSpeed;
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        rb.AddForce(spawnpoint.forward * bulletForce, ForceMode.Impulse);
         Destroy(spawnedBullet, 5);
     }
 
